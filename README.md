@@ -87,20 +87,53 @@ Much of the implementation and has been done in `ipcp.l1d_pref` and `ipcp.l2c_pr
 
 ## L1D level prefetching
 * In **`ipcp.l1d_pref`**, the following changes were thought of, and implemented :
-  * Thrashing Protection to avoid next-line prefetches for thrashing IPs
-  * Prefetcher throttling (IP-independent) for Global Streaming class of IPs to increase prefetching accuracy
-  * Prefetcher throttling (IP-independent) for all classes of IPs to increase prefetching accuracy
+  * **Change**: Thrashing Protection to avoid next-line prefetches for streaming IPs
+  <br/>
+  **Motivation**: Streaming IP's have very less reuse. They kind of access the memory randomly. So any simple attempt to prefetch for such an IP, would only pollute the cache.
+  <br/>
+  **Implementation**: For a given IP, let the previously accessed address, and current requested address be M<sub>old</sub> and M<sub>curr</sub> respectively. Then we consider the request to be streaming if |M<sub>old</sub> - M<sub>curr</sub>| > 1page(i.e. 64 cache lines) 
+  <br/>
+  <br/>
+  * **Change**: Prefetcher throttling (IP-independent) for **only Global Streaming** class of IPs to increase prefetching accuracy
+  <br/>
+  **Motivation**: We've observed that one of the GS dominant traces(sssp) showing very low prefetch accuracy. One reason for this is because ipcp goes too aggressive when it finds a GS access which is not required for graph workloads.
+  <br/>
+  **Implementation**: We've used the `pf_useful` and `pf_useless` attributes of the cache to find the prefetch-accuracy. And then we increase the prefetch degree when the accuracy is high and decrease it when the accuracy is low. As a straight forward consequence of the implementation, our throttling is IP independent.
+  <br/>
+  <br/>
+  * **Change**: Prefetcher throttling (IP-independent) for **all classes** of IPs to increase prefetching accuracy.
+  <br/>
+  **Motivation**: Same as above. We just used this as an alternative idea to only GS class throttling.
+  <br/>
+  **Implementation**: Same as above.
+  **Note**: When we've tried both the `only GS throttling` and `al class throttling` ideas, the `only GS throttling` idea worked well. One reason is because the CS class which is based on 2-bit counter, takes time to update.
+  <br/>
+  **Example**: Stride: 1,1,1,1,2,2, ?. At the question mark, the CS prefetcher will still predict a stride = 1. But consider the case where true answer at ? is  = 2. Our CS prefetcher will miss it if its degree == 1. But if its degree >1 , it wouldn't miss this. **So in short, having slightly higher prefetch degrees for CS and CPLX prefetchers is **good**!!**
+  <br/>
+  <br/>
   * Reducing the GS prefetch degree as compared to original IPCP details.
-  * Implemented a debugging output for analysing IP access behaviour. 
+  **Implementation**: We've **manually tuned** and reduced the GS-prefetch degree so as to increase the prefetcher accuracy.
+  <br/>
+  <br/>
+  * Implemented a debugging output for analysing IP access behaviour. This is a key component of our work. To turn on L1D debugging output we just need to uncomment out `#define AKASH_LOAD_PRINT` line in `ipcp.l1d_pref` file..
 
 ## L2C level prefetching
+All the motivations described above for L1D apply exaclty for L2C as well.
 * In **`ipcp.l2c_pref`**, the following changes were thought of, and implemented :
   * Thrashing Protection to avoid next-line prefetches for thrashing IPs
+  <br/>
+  **Implementation**: Streaming IPs anyway won't belong to CS or CPLX or GS class. So only we need to avoid NL prefetching for those. So to implement this, we've not prefetched for any LOAD request using the `NL` prefetcher at L2C.
+  <br/>
+  <br/>
   * Supressing the GS prefetch degree as compared to original IPCP details.
-  * Implemented a debugging output for analysing IP's memory access behaviour. 
-  
+  <br/>
+  <br/>
+  * Implemented a debugging output for analysing IP's memory access behaviour. To turn on L2C debugging output we just need to uncomment out `#define AKASH_LOAD_PRINT_L2` line in `ipcp.l2c_pref` file.
+  <br/>
+  <br/>
+* **Caution**: Dont turn on the debugging at both L1D and L2C simultaneously.
 
-The files `analyseL1d.ipynb` and `analyseL2c.ipynb` are used to analyse and plot the memory access behaviour of various IPs.
+The files [analyseL1D](./analyseL1D.ipynb) and [analyseL2C](./analyseL2C.ipynb) are used to analyse and plot the memory access behaviour of various IPs at L1D and L2C respectively using the debug outputs of the same. Just give the  right debug file path to these `ipynb` files and run all cells.
   
 # Improvement Achieved
 
@@ -117,5 +150,20 @@ After iteratively upgrading and tweaking the prefetchers at L1D and L2C level, w
 
 We achieved a average of 4.76% betterment over the original IPCP for 3 traces (Bellmanford, Components, sssp-5).
 Two of the traces have a worser IPC when compared to org. IPCP prefetcher.
+
+# Pros
+* Robust to streaming IP’s both at L1D and L2C
+
+* Can automatically set it’s prefetch degree according to the prefetch accuracy
+
+* Improved L1D accuracy significantly.
+ 
+
+# Cons/ Possible Improvements
+* We've only explored the traces with single-core simulations. We need to explore them with multi-core as well
+
+* Need to counter the decrease in IPC of BellmanFord trace. Almost -5% of the -7.14% was because of thrashing protection at L1D. That means there is some locality within the streaming IP as well which we in our implementation were not able to leverage
+
+* Accuracy at L2C is less than 15% right now. It can be improved.
 
 
