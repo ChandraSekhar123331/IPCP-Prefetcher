@@ -1698,5 +1698,14 @@ int main(int argc, char **argv) {
   print_reuse_dist_stats(&ooo_cpu[0].L1D);
 #endif
 
-  return 0;
-}
+
+// @akash:
+  for (uint32_t i = 0; i < NUM_CPUS; i++)
+  {
+    cout << "***************** CPU-" << i << " **********************"<<endl;
+    ooo_cpu[i].L1D.l1d_prefetcher_final_stats();
+    ooo_cpu[i].L2C.l2c_prefetcher_final_stats();
+  }
+
+    return 0;
+  }

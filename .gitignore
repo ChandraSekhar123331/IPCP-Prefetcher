@@ -1,1 +1,10 @@
 traces/*
+**/.vscode/
+**/testing/
+**/.ipynb_checkpoints/
+**/results_10M/
+**/risk5.l1d_pref
+**/risk5.l2c_pref
+**/risk5.llc_pref
+**/bin/*
+**/obj/
