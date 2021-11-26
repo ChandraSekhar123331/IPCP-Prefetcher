@@ -20,13 +20,14 @@ ChampSim is a trace-based simulator for a microarchitecture study. You can sign 
 # The Team
 This is our team **Risk-5** which was formed as a part of [CS 305 : Computer Architecture](https://www.cse.iitb.ac.in/~biswa/courses/CS305/main.html) at IIT-Bombay.
 
-| Student           | Roll No.  | Contribution |
-| ----------------- | :-------: | -----------: |
-| Chandrasekhar D   | 190050031 |        $1600 |
-| Akash Reddy G     | 190050038 |        $1200 |
-| Satwik M          | 190050107 |           $1 |
-| Kranthi Chandra A | 190050022 |           $1 |
-| Vishwanth K       | 190050131 |           $1 |
+| Student           | Roll No.  | Contribution                                                                                       |
+| ----------------- | :-------: | -------------------------------------------------------------------------------------------------- |
+| Chandrasekhar D   | 190050031 | Enhancing IPCP at L1d and L2c. Implementing code for the same.                                     |
+| Akash Reddy G     | 190050038 | Enhancing IPCP at L1d and L2c. Implementing code for the same.                                     |
+| Satwik M          | 190050107 | Proposed ideas for enhancing IPCP. Prepared README.                                                |
+| Kranthi Chandra A | 190050022 | Understanding memory access for various IPs. Python implementation for making graphs for the same. |
+| Vishwanth K       | 190050131 | Understanding IPCP and limitations for graph workloads. Prepared slides for presentation.          |
+
 
 <!-- Ctrl + Shift + I  to format the table, on linux. Extension Markdown All in One
 <!-- Alt  + Shift + I  to format the table, on windows. Extension Markdown All in One
