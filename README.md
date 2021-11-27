@@ -13,6 +13,9 @@ This README is intended to be a bit more detailed. For a shorter and concise loo
   - [L1D level prefetching](#l1d-level-prefetching)
   - [L2C level prefetching](#l2c-level-prefetching)
 - [Improvement Achieved](#improvement-achieved)
+- [Pros](#pros)
+- [Cons/ Possible Improvements](#cons-possible-improvements)
+
 
 
 # Introduction
