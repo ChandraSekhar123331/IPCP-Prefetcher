@@ -1,4 +1,7 @@
 # IPCP Prefetcher Enhancement <!-- omit in toc -->
+This README is intended to be a bit more detailed. For a shorter and concise look into our work please refer to the following:
+* [Slides](https://docs.google.com/presentation/d/1lgbyErfV8NYx3Lgxo3zz7-1yg1TN7UR80YPdJ1HLsLM/edit?usp=sharing)
+* [Video explaining the slides](https://youtu.be/s-BW-CfVKiQ)
 # Table of Contents <!-- omit in toc -->
 - [Introduction](#introduction)
 - [The Team](#the-team)
